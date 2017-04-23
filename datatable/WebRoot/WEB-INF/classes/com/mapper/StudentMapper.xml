@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.StudentMapper" >
+   <select id="selectStudentAll2" resultType="com.pojo.Student">
+     select id,name,sex,location from student
+		  where  <![CDATA[ROWNUM <=20]]> 
+		  order by id 
+   </select>
+   <select id="selectStudentAll" parameterType="com.pojo.PageInfo" resultType="com.pojo.Student">
+      SELECT * FROM  
+			(  
+			  SELECT A.*, <![CDATA[ROWNUM]]> RN  
+			  FROM (SELECT * FROM student order by id asc) A  
+			  WHERE <![CDATA[ROWNUM <=#{end}]]> 
+			)  
+            WHERE RN >= #{start}
+   </select>
+   
+   <select id="selectStutotal" resultType="int">
+      select count(1) from student 	
+   </select>
+   
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>datatable.html</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+<link rel="stylesheet" type="text/css" href="../js/media/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="../js/media/css/dataTables.jqueryui.css">
+<script type="text/javascript" src="../js/media/js/jquery.js"></script>
+<script type="text/javascript" src="../js/media/js/jquery.dataTables.js"></script>
+
+  </head>
+  
+  <body>
+     <div  id="demo">
+       <TABLE id="example"></TABLE> 
+     </div>
+     <input id="button1" type="button" value="分页"/>
+  </body>
+ <script type="text/javascript">
+  var surl="http://localhost:8080/datatable/stu/getallstu.action?rand="+ Math.random();
+$(document).ready(function() {
+   var table = $("#example").dataTable( {
+      //  "data":"data",
+        "sAjaxSource":surl ,
+	   // "order": [[ 3, "desc" ]],
+        "paging": true,
+        "pagingType" : "full_numbers",
+        "serverSide": true,
+        "fnServerData": function(sSource, aoData, fnCallback){
+	        var paging_length=aoData[4].value;//当前每页显示多少  
+			var page_start=aoData[3].value;//当前页开始  
+			var page=Div(page_start,paging_length); 
+		   console.log(paging_length+" "+page_start+" "+page);
+           console.log(JSON.stringify(aoData));
+			  $.ajax( { 
+				  "type" : 'post', 
+				  "url": surl, 
+				  "dataType": "json", 
+				  "data": { "sEcho" :aoData[0].value,"nowpage" :page,"iDisplayStart" :aoData[3].value,"iDisplayLength" :aoData[4].value  },
+				  "success": function(resp) { 
+				    console.log(resp);
+				    fnCallback(resp);
+				  } 
+			  }); 
+			 },
+        "processing": true,
+        "bLengthChange": true,                 //用户不可改变每页显示数量     
+         "iDisplayLength": 5, 
+         "oLanguage": {                          //汉化     
+               "sLengthMenu": "每页显示 _MENU_ 条记录",     
+               "sZeroRecords": "没有检索到数据",     
+               "sInfo": "当前数据为从第 _START_ 到第 _END_ 条数据；总共有 _TOTAL_ 条记录",     
+               "sInfoEmtpy": "没有数据",     
+               "sProcessing": "正在加载数据...",     
+               "oPaginate": {     
+                   "sFirst": "首页",     
+                   "sPrevious": "前页",     
+                   "sNext": "后页",     
+                   "sLast": "尾页"    
+               }     
+           },                   //每页显示8条数据
+         "columns":[
+			    { "searchable": true ,
+			      "title":"ID" ,
+			      "data":"id"
+			    },
+			    { "searchable": true ,
+			      "title":"name" ,
+			      "data":"name"
+			    },
+			    { "searchable": true ,
+			      "title":"location",
+			      "data":"sex" 
+			    },
+			     {"searchable": true ,
+			      "title":"sex" ,
+			      "data":"location"
+			    }		    
+			  ],
+		    "aoColumnDefs": [//和aoColums类似，但他可以给指定列附近爱属性
+		         //这句话意思是第1,3,6,7,8,9列（从0开始算） 不能排序
+                   {"bSortable": false, "aTargets": [1, 2]}  
+               ]
+			  
+      	  
+    } ); 
+    
+    
+function Div(exp1, exp2) {  //整除  
+    var n1 = Math.round(exp1); //四舍五入     
+    var n2 = Math.round(exp2); //四舍五入    
+  
+    var rslt = n1 / n2; //除    
+    if (rslt >= 0) {  
+        rslt = Math.floor(rslt); //返回小于等于原rslt的最大整数。     
+    }  
+    else {  
+        rslt = Math.ceil(rslt); //返回大于等于原rslt的最小整数。     
+    }  
+    return rslt+1;  
+}  
+
+} );
+  
+  
+  
+ </script> 
+  
+  
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
