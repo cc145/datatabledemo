@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>echarts.html</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <!-- <script type="text/javascript" src="js/echarts/build/source/echarts-all.js"></script> -->
+  </head>
+  <body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="height:400px"></div>
+    <!-- ECharts单文件引入 -->
+    <script src="js/jquery.js" ></script>
+    <script src="js/echarts/build/source/echarts.js"></script>
+    <script type="text/javascript">
+        // 路径配置
+        var temp=true;
+       require.config({
+            paths: {
+                echarts: 'js/echarts/build/source'
+            }
+        });
+        
+        // 使用
+       var ecConfig= require(
+            [
+                'echarts',
+                'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/line'
+            ],
+     function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+        var myChart = ec.init(document.getElementById('main')); 
+        var option = {  
+         title : {  
+                text: '商品排名分析',  
+               subtext:'横向：商品名称， 纵向：金额'  
+        },  
+         tooltip: {  
+             show: true,  
+             trigger: 'axis'  
+         },  
+         legend: {  
+             data:['销售重量','订单金额','all'],
+             selected:{
+               "all":true,
+               "订单金额":true,
+               "销售重量":true
+             }   
+         },  
+         toolbox: {  
+       show : false,  
+       feature : {  
+           mark : {show: true},  
+           dataView : {show: true, readOnly: false},  
+           magicType : {show: true, type: ['bar','line']},  
+           restore : {show: true},  
+           saveAsImage : {show: true}  
+       }  
+   },  
+ grid:{  
+        
+            y2:150  
+          },  
+         xAxis : [  
+             {  
+                 type : 'category',  
+                 boundaryGap : true,  
+                 data : ["2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019"],  
+                 axisLabel:{    
+                           interval:0 ,  
+                           formatter:function(val){    
+                             return val.split("").join("\n");    
+                           }    
+                       }    
+             }  
+         ],  
+         yAxis : [  
+             {  
+                 type : 'value'  
+             }  
+         ],  
+         series : [   
+             {  
+                 "name":"销售重量",  
+                 "type":"line",  
+                 "data":[11,12,14,15,12,18,11,12,14,15,12,18]   
+             },  
+             {  
+                 "name":"订单金额",  
+                 "type":"line",  
+                 "data":[10,200,300,121,123,50,10,200,300,121,123,50]   
+             }   
+         ]        
+     };  
+        
+        
+        var ecConfig = require('echarts/config');
+        console.log(option);
+        myChart.on(ecConfig.EVENT.LEGEND_SELECTED, function (param){
+                   console.log(param);
+                    console.log(param.target);
+              if(param.target=='all'){
+              
+              if(temp) {
+                 option.legend.selected["订单金额"]=false;
+                 option.legend.selected["销售重量"]=false;
+                 temp=false;
+              }else{
+                 option.legend.selected["订单金额"]=true;
+                 option.legend.selected["销售重量"]=true;
+                 temp=true;
+              }
+              }
+                console.log(option);
+                option.title.text="cc";
+               // var c=ec.init(document.getElementById('main'));
+                myChart.setOption(option,false);
+               //  myChart.refresh();
+                
+            });
+                // 为echarts对象加载数据 
+             myChart.setOption(option); 
+
+            }
+        );
+       
+      
+        
+        
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
